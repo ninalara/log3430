@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<System name="TP3">
+  <Parameters>
+    <Parameter id="0" name="calculprobabilites" type="0">
+      <values>
+        <value>0</value>
+        <value>1</value>
+      </values>
+      <basechoices />
+      <invalidValues />
+    </Parameter>
+    <Parameter id="1" name="combinaisonprobabilites" type="0">
+      <values>
+        <value>0</value>
+        <value>1</value>
+      </values>
+      <basechoices />
+      <invalidValues />
+    </Parameter>
+    <Parameter id="2" name="creationvocab" type="0">
+      <values>
+        <value>1</value>
+        <value>2</value>
+        <value>3</value>
+        <value>4</value>
+      </values>
+      <basechoices />
+      <invalidValues />
+    </Parameter>
+    <Parameter id="3" name="nettoyagetexte" type="0">
+      <values>
+        <value>0</value>
+        <value>1</value>
+        <value>2</value>
+        <value>3</value>
+      </values>
+      <basechoices />
+      <invalidValues />
+    </Parameter>
+    <Parameter id="4" name="definitionspam" type="0">
+      <values>
+        <value>0</value>
+        <value>1</value>
+        <value>2</value>
+      </values>
+      <basechoices />
+      <invalidValues />
+    </Parameter>
+  </Parameters>
+  <OutputParameters />
+  <Relations />
+  <Constraints />
+  <Testset doi="2">
+    <Testcase TCNo="0">
+      <Value>1</Value>
+      <Value>1</Value>
+      <Value>1</Value>
+      <Value>1</Value>
+      <Value>0</Value>
+      <Value>1</Value>
+    </Testcase>
+    <Testcase TCNo="1">
+      <Value>2</Value>
+      <Value>0</Value>
+      <Value>0</Value>
+      <Value>1</Value>
+      <Value>1</Value>
+      <Value>2</Value>
+    </Testcase>
+    <Testcase TCNo="2">
+      <Value>3</Value>
+      <Value>1</Value>
+      <Value>0</Value>
+      <Value>1</Value>
+      <Value>2</Value>
+      <Value>0</Value>
+    </Testcase>
+    <Testcase TCNo="3">
+      <Value>4</Value>
+      <Value>0</Value>
+      <Value>1</Value>
+      <Value>1</Value>
+      <Value>3</Value>
+      <Value>1</Value>
+    </Testcase>
+    <Testcase TCNo="4">
+      <Value>5</Value>
+      <Value>1</Value>
+      <Value>0</Value>
+      <Value>2</Value>
+      <Value>0</Value>
+      <Value>2</Value>
+    </Testcase>
+    <Testcase TCNo="5">
+      <Value>6</Value>
+      <Value>0</Value>
+      <Value>1</Value>
+      <Value>2</Value>
+      <Value>1</Value>
+      <Value>0</Value>
+    </Testcase>
+    <Testcase TCNo="6">
+      <Value>7</Value>
+      <Value>0</Value>
+      <Value>0</Value>
+      <Value>2</Value>
+      <Value>2</Value>
+      <Value>1</Value>
+    </Testcase>
+    <Testcase TCNo="7">
+      <Value>8</Value>
+      <Value>1</Value>
+      <Value>1</Value>
+      <Value>2</Value>
+      <Value>3</Value>
+      <Value>2</Value>
+    </Testcase>
+    <Testcase TCNo="8">
+      <Value>9</Value>
+      <Value>0</Value>
+      <Value>0</Value>
+      <Value>3</Value>
+      <Value>0</Value>
+      <Value>0</Value>
+    </Testcase>
+    <Testcase TCNo="9">
+      <Value>10</Value>
+      <Value>1</Value>
+      <Value>1</Value>
+      <Value>3</Value>
+      <Value>1</Value>
+      <Value>1</Value>
+    </Testcase>
+    <Testcase TCNo="10">
+      <Value>11</Value>
+      <Value>1</Value>
+      <Value>1</Value>
+      <Value>3</Value>
+      <Value>2</Value>
+      <Value>2</Value>
+    </Testcase>
+    <Testcase TCNo="11">
+      <Value>12</Value>
+      <Value>1</Value>
+      <Value>0</Value>
+      <Value>3</Value>
+      <Value>3</Value>
+      <Value>0</Value>
+    </Testcase>
+    <Testcase TCNo="12">
+      <Value>13</Value>
+      <Value>0</Value>
+      <Value>1</Value>
+      <Value>4</Value>
+      <Value>0</Value>
+      <Value>1</Value>
+    </Testcase>
+    <Testcase TCNo="13">
+      <Value>14</Value>
+      <Value>1</Value>
+      <Value>0</Value>
+      <Value>4</Value>
+      <Value>1</Value>
+      <Value>2</Value>
+    </Testcase>
+    <Testcase TCNo="14">
+      <Value>15</Value>
+      <Value>0</Value>
+      <Value>1</Value>
+      <Value>4</Value>
+      <Value>2</Value>
+      <Value>0</Value>
+    </Testcase>
+    <Testcase TCNo="15">
+      <Value>16</Value>
+      <Value>0</Value>
+      <Value>1</Value>
+      <Value>4</Value>
+      <Value>3</Value>
+      <Value>2</Value>
+    </Testcase>
+  </Testset>
+  <Header>
+    <Value />
+    <Value>CALCULPROBABILITES</Value>
+    <Value>COMBINAISONPROBABILITES</Value>
+    <Value>CREATIONVOCAB</Value>
+    <Value>NETTOYAGETEXTE</Value>
+    <Value>DEFINITIONSPAM</Value>
+  </Header>
+  <Stat-Data>
+    <ExecutionTime>0.014</ExecutionTime>
+    <MaxDomainSize>4</MaxDomainSize>
+    <MinDomainSize>2</MinDomainSize>
+    <TotalNoOfCombination>88</TotalNoOfCombination>
+    <TotalNoOfTests>16</TotalNoOfTests>
+    <Algorithm>IPOG</Algorithm>
+  </Stat-Data>
+</System>
+
