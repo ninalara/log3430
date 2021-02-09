@@ -1,0 +1,13 @@
+.idea/
+
+# virtualenv
+.venv
+venv/
+ENV/
+
+# Unit test / coverage reports
+htmlcov/
+.coverage
+.coverage.*
+
+__pycache__/

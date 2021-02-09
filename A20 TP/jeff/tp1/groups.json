@@ -1,0 +1,22 @@
+{
+    "2": {
+        "name": "groupe2",
+        "Trust": 0,
+        "List_of_members": [
+            "allo2"
+        ]
+    },
+    "3": {
+        "name": "default",
+        "Trust": 57.0,
+        "List_of_members": [
+            "GP@paris.com",
+            "farmer@paris.com",
+            "kitchen@paris.com",
+            "SA_and_HP@paris.com",
+            "kaminski@paris.com",
+            "williams@paris.com",
+            "BG@paris.com"
+        ]
+    }
+}

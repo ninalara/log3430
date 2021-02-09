@@ -1,0 +1,116 @@
+{
+    "1": {
+        "name": "nouveau@email.com",
+        "Trust": 50,
+        "SpamN": 0,
+        "HamN": 0,
+        "Date_of_first_seen_message": 101010,
+        "Date_of_last_seen_message": 101010,
+        "Groups": [
+            "default"
+        ]
+    },
+    "2": {
+        "name": "addUser@email.com",
+        "Trust": 60,
+        "SpamN": 0,
+        "HamN": 0,
+        "Date_of_first_seen_message": 101010,
+        "Date_of_last_seen_message": 101010,
+        "Groups": [
+            "default",
+            "autre_groupe",
+            "autre_groupe",
+            "autre_groupe",
+            "autre_groupe"
+        ]
+    },
+    "3": {
+        "name": "update@email.com",
+        "Trust": 50,
+        "SpamN": 0,
+        "HamN": 0,
+        "Date_of_first_seen_message": 101010,
+        "Date_of_last_seen_message": 101010,
+        "Groups": [
+            "default"
+        ]
+    },
+    "4": {
+        "name": "GP@paris.com",
+        "Trust": 0.0,
+        "SpamN": 980,
+        "HamN": 0,
+        "Date_of_first_seen_message": 1072069200.0,
+        "Date_of_last_seen_message": 1125979200.0,
+        "Groups": [
+            "default"
+        ]
+    },
+    "5": {
+        "name": "farmer@paris.com",
+        "Trust": 100.0,
+        "SpamN": 0,
+        "HamN": 588,
+        "Date_of_first_seen_message": 945147600.0,
+        "Date_of_last_seen_message": 1010638800.0,
+        "Groups": [
+            "default"
+        ]
+    },
+    "6": {
+        "name": "kitchen@paris.com",
+        "Trust": 100.0,
+        "SpamN": 0,
+        "HamN": 676,
+        "Date_of_first_seen_message": 981694800.0,
+        "Date_of_last_seen_message": 1012885200.0,
+        "Groups": [
+            "default"
+        ]
+    },
+    "7": {
+        "name": "SA_and_HP@paris.com",
+        "Trust": 0.0,
+        "SpamN": 324,
+        "HamN": 0,
+        "Date_of_first_seen_message": 994392000.0,
+        "Date_of_last_seen_message": 1122004800.0,
+        "Groups": [
+            "default"
+        ]
+    },
+    "8": {
+        "name": "kaminski@paris.com",
+        "Trust": 100.0,
+        "SpamN": 0,
+        "HamN": 868,
+        "Date_of_first_seen_message": 947048400.0,
+        "Date_of_last_seen_message": 989553600.0,
+        "Groups": [
+            "default"
+        ]
+    },
+    "9": {
+        "name": "williams@paris.com",
+        "Trust": 100.0,
+        "SpamN": 0,
+        "HamN": 248,
+        "Date_of_first_seen_message": 992318400.0,
+        "Date_of_last_seen_message": 1012971600.0,
+        "Groups": [
+            "default"
+        ]
+    },
+    "10": {
+        "name": "BG@paris.com",
+        "Trust": 0.0,
+        "SpamN": 316,
+        "HamN": 0,
+        "Date_of_first_seen_message": 1092456000.0,
+        "Date_of_last_seen_message": 1122609600.0,
+        "Groups": [
+            "default"
+        ]
+    }
+}
