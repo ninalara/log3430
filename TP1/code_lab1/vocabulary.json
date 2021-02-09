@@ -1,0 +1,14 @@
+{
+    "p_sub_spam": {
+        "word": 1.0
+    },
+    "p_sub_ham": {
+        "word": 1.0
+    },
+    "p_body_spam": {
+        "word": 1.0
+    },
+    "p_body_ham": {
+        "word": 1.0
+    }
+}

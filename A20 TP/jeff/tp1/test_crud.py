@@ -51,6 +51,7 @@ class TestCRUD(unittest.TestCase):
     def test_add_new_user_Passes_correct_data_to_modify_users_file(
         self, mock_modify_users_file, mock_read_users_file
     ):
+    
         crud = CRUD()
         mock_read_users_file.return_value = self.users_data
         mock_modify_users_file.return_value = True

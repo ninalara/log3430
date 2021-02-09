@@ -28,6 +28,7 @@ class CRUD:
 
     ##*************CREATE**************
 
+
     def add_new_user(self, user_email, date):
         '''
         Description: fonction pour ajouter un nouvel utilisateur 
