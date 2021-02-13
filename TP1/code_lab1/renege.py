@@ -7,6 +7,7 @@ from email_analyzer import EmailAnalyzer
 
 class RENEGE:
 
+
     """Class pour realiser le filtrage du spam en utilisant vocabular.json file et
     CRUD et EmalAnalyze classes"""
 
@@ -14,6 +15,44 @@ class RENEGE:
         self.email_file = "train_set.json"
         self.crud = CRUD()
         self.e_mail = EmailAnalyzer()
+
+    def calculate_user_trust(self, user_id):
+        #json data
+        date_of_first_seen_message = self.crud.get_user_data(user_id, "Date_of_first_seen_message")
+        date_of_last_seen_message = self.crud.get_user_data(user_id, "Date_of_last_seen_message")
+        n_ham = self.crud.get_user_data(user_id, "HamN")
+        n_spam = self.crud.get_user_data(user_id, "SpamN")
+        user_name = self.crud.get_user_data(user_id, "name")
+        groups = self.crud.read_groups_file()
+
+        sum_trust = 0
+        n_groups = 0
+        
+        # find nb of groups to which user belongs
+        for group in groups.values() :
+            if user_name in group["List_of_members"]:
+                sum_trust += group["Trust"]
+                n_groups += 1
+
+        trust1 = (date_of_last_seen_message * n_ham) / (date_of_first_seen_message * (n_ham + n_spam))
+        trust2 = 0
+        # to avoid 'division by zero' error 
+        if n_groups != 0:
+            trust2 = sum_trust / n_groups
+        
+        trust = (trust1 + trust2) / 2
+
+        if trust2 < 50:
+            trust = trust2
+        if trust1 > 100:
+            trust = 100
+
+        if trust > 100:
+            trust = 100
+        elif trust < 0:
+            trust = 0
+            
+        return trust
 
     def classify_emails(self):
         '''
