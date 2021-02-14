@@ -1,1 +1,1 @@
-{}
+{"1": {"name": "alex@gmail.com", "Trust": 100, "SpamN": 0, "HamN": 20, "Date_of_first_seen_message": 1596848266.0, "Date_of_last_seen_message": 1596848266.0, "Groups": ["default"]}, "2": {"name": "mark@mail.com", "Trust": 10, "SpamN": 171, "HamN": 324, "Date_of_first_seen_message": 1596855166.0, "Date_of_last_seen_message": 1596855166.0, "Groups": ["default"]}}
