@@ -1,7 +1,5 @@
 import json
-
 from email_analyzer import EmailAnalyzer
-
 import unittest
 from unittest.mock import patch
 
@@ -35,23 +33,23 @@ class TestEmailAnalyzer(unittest.TestCase):
         )  # données pour mocker "return_value" du "subject_spam_ham_prob"
         self.vocab = (
             {
-                "spam_sub": {
+                "p_sub_spam": {
                     "upgrade" : 1/3,
                     "software" : 1/3
                 },
-                "ham_sub": {
+                "p_sub_ham": {
                     "re" : 1/2,
                     "annoucement" : 1/6,
                     "more" : 1/6
                 },
-                "spam_body": {
+                "p_body_spam": {
                     "best" : 1/4,
                     "deal" : 1/4,
                     "skip" : 1/4,
                     "special" : 1/4,
                     "money" : 1/4
                 },
-                "ham_body": {
+                "p_body_ham": {
                     "today": 1/6,
                     "professional" : 1/6,
                     "meet" : 1/6,
@@ -60,8 +58,10 @@ class TestEmailAnalyzer(unittest.TestCase):
                 }
             }
         )  # vocabulaire avec les valeurs de la probabilité pour mocker "return_value" du "load_dict"
-        self.spam_ham_body_prob_expected = (0.5925*17/1536), (0.4075*20/30)  # valeurs de la probabilité attendus
-        self.subject_spam_ham_prob_expected = (0.5925*2/27), (0.4075*3/24)  # valeurs de la probabilité attendus
+        # valeurs de la probabilité attendus : (0.5925*1/(256*pow(6,17))), (0.4075*1/pow(6,21)) 
+        self.spam_ham_body_prob_expected = (1.3673419333309543e-16, 1.8575963755415577e-17)  
+        # valeurs de la probabilité attendus : (0.5925*1/81, 0.4075*1/6*1/4*1/4*1/4)  
+        self.subject_spam_ham_prob_expected = (0.007314814814814815, 0.0010611979166666665)  
 
     def tearDown(self):
         pass

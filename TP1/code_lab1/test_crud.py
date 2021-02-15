@@ -62,7 +62,14 @@ class TestCRUD(unittest.TestCase):
         self.modify_users_file(data) -> "data" doit avoir un format et contenu expectee
         il faut utiliser ".assert_called_once_with(expected_data)"
         """
-   
+        
+    @patch("crud.CRUD.read_users_file")    
+    def test_add_new_user_Returns_false_for_invalid_email(
+        self, mock_read_users_file
+    ):
+        mock_read_users_file.return_value = self.users_data
+        crud = CRUD()
+        self.assertEqual(crud.add_new_user("bobgmail.com", "2021-02-09"), False)   
 
     @patch("crud.CRUD.read_users_file")
     @patch("crud.CRUD.read_groups_file")
@@ -133,6 +140,7 @@ class TestCRUD(unittest.TestCase):
         crud = CRUD()
         self.assertFalse(crud.get_groups_data("10","Trust"), testMessage)
         """"""
+        pass
 
     @patch("crud.CRUD.read_users_file")
     @patch("crud.CRUD.read_groups_file")
@@ -145,6 +153,7 @@ class TestCRUD(unittest.TestCase):
         crud = CRUD()
         self.assertFalse(crud.get_groups_data("1","ABCDEFG"), testMessage)
         """"""
+        pass
 
     @patch("crud.CRUD.read_users_file")
     @patch("crud.CRUD.read_groups_file")
@@ -157,6 +166,7 @@ class TestCRUD(unittest.TestCase):
         crud = CRUD()
         self.assertEqual(crud.get_user_data("1","Trust"), fieldValue)
         """"""
+        pass
 
     @patch("crud.CRUD.read_users_file")
     def test_get_user_id_Returns_false_for_invalid_user_name(
@@ -166,6 +176,7 @@ class TestCRUD(unittest.TestCase):
         mock_read_users_file.return_value = self.users_data
         crud = CRUD()
         self.assertFalse(crud.get_user_id("ArianeNini@gmail.com"), testMessage)
+        pass
 
     @patch("crud.CRUD.read_users_file")
     def test_get_user_id_Returns_id_for_valid_user_name(self, mock_read_users_file):
@@ -173,6 +184,7 @@ class TestCRUD(unittest.TestCase):
         mock_read_users_file.return_value = self.users_data
         crud = CRUD()
         self.assertEqual(crud.get_user_id("alex@gmail.com"), fieldValue)
+        pass
 
     @patch("crud.CRUD.read_users_file")
     @patch("crud.CRUD.read_groups_file")
@@ -184,6 +196,7 @@ class TestCRUD(unittest.TestCase):
         mock_read_groups_file.return_value = self.groups_data
         crud = CRUD()
         self.assertFalse(crud.get_group_id("ArianeNini"), testMessage)
+        pass
 
     @patch("crud.CRUD.read_users_file")
     @patch("crud.CRUD.read_groups_file")
@@ -193,6 +206,7 @@ class TestCRUD(unittest.TestCase):
         mock_read_groups_file.return_value = self.groups_data
         crud = CRUD()
         self.assertEqual(crud.get_user_id("friends"), fieldValue)
+        pass
 
     @patch("crud.CRUD.read_users_file")    
     def test_update_users_Returns_false_for_invalid_id(
@@ -205,6 +219,7 @@ class TestCRUD(unittest.TestCase):
         """Il faut utiliser les mocks pour 'read_users_file' et 'modify_users_file'
         (ou selon votre realisation)
         """
+        pass
 
     @patch("crud.CRUD.read_users_file")    
     def test_update_users_Returns_false_for_invalid_field(
@@ -217,6 +232,7 @@ class TestCRUD(unittest.TestCase):
         """Il faut utiliser les mocks pour 'read_users_file' et 'modify_users_file'
         (ou selon votre realisation)
         """
+        pass
 
     @patch("crud.CRUD.modify_users_file")
     @patch("crud.CRUD.read_users_file")    
@@ -246,6 +262,7 @@ class TestCRUD(unittest.TestCase):
         """Il faut utiliser les mocks pour 'read_groups_file' et 'modify_groups_file'
         (ou selon votre realisation)
         """
+        pass
 
     @patch("crud.CRUD.read_users_file")
     @patch("crud.CRUD.read_groups_file")    
@@ -260,6 +277,7 @@ class TestCRUD(unittest.TestCase):
         """Il faut utiliser les mocks pour 'read_groups_file' et 'modify_groups_file'
         (ou selon votre realisation)
         """
+        pass
 
     @patch("crud.CRUD.modify_groups_file")
     @patch("crud.CRUD.read_groups_file")    
@@ -283,16 +301,19 @@ class TestCRUD(unittest.TestCase):
         fieldValue=False
         mock_read_users_file.return_value = self.users_data
         crud = CRUD()
-        self.assertEqual(crud.remove_user("3"), fieldValue)
+        self.assertEqual(crud.remove_user(3), fieldValue)
+        pass
 
+    @patch("crud.CRUD.modify_users_file")
     @patch("crud.CRUD.read_users_file")    
     def test_remove_user_Passes_correct_value_to_modify_users_file(
-        self, mock_read_users_file
+        self, mock_read_users_file, mock_modify_users_file
     ):
-        fieldValue=True
         mock_read_users_file.return_value = self.users_data
         crud = CRUD()
-        self.assertEqual(crud.remove_user("1"), fieldValue)
+        crud.remove_user(1)
+        mock_modify_users_file.assert_called_once_with(self.users_data)
+        pass
 
 
     @patch("crud.CRUD.read_users_file")  
@@ -305,17 +326,16 @@ class TestCRUD(unittest.TestCase):
         mock_read_groups_file.return_value = self.groups_data
         crud = CRUD()
         self.assertEqual(crud.remove_user_group("3","friends"), fieldValue)
+        pass
 
-    @patch("crud.CRUD.read_users_file")  
-    @patch("crud.CRUD.read_groups_file")     
+    @patch("crud.CRUD.read_users_file")     
     def test_remove_user_group_Returns_false_for_invalid_group(#Bool not iterable
-        self, mock_read_users_file, mock_read_groups_file
+        self, mock_read_users_file
     ):
-        #testMessage= "Invalide"
-        #mock_read_users_file.return_value = self.users_data
-        #mock_read_groups_file.return_value = self.groups_data
-        #crud = CRUD()
-        #self.assertFalse(crud.remove_user_group("1","alex@gmail.com"), testMessage)
+        testMessage="Invalide"
+        mock_read_users_file.return_value = self.users_data
+        crud = CRUD()
+        self.assertFalse(crud.remove_user_group("1",testMessage))
         pass
 
     @patch("crud.CRUD.modify_users_file")  
@@ -327,6 +347,7 @@ class TestCRUD(unittest.TestCase):
         crud=CRUD()
         crud.remove_user_group("1","default")
         mock_modify_users_file.assert_called_once_with(self.users_data)
+        pass
 
 
     @patch("crud.CRUD.read_groups_file")    
@@ -337,6 +358,7 @@ class TestCRUD(unittest.TestCase):
         mock_read_groups_file.return_value = self.groups_data
         crud=CRUD()
         self.assertEqual(crud.remove_group("3"),fieldValue)
+        pass
 
     @patch("crud.CRUD.modify_groups_file")
     @patch("crud.CRUD.read_groups_file")    
@@ -347,6 +369,7 @@ class TestCRUD(unittest.TestCase):
         crud=CRUD()
         crud.remove_group("2")
         mock_modify_groups_file.assert_called_once_with(self.groups_data)
+        pass
 
     @patch("crud.CRUD.read_groups_file")    
     def test_remove_group_member_Returns_false_for_invalid_id(
@@ -356,6 +379,7 @@ class TestCRUD(unittest.TestCase):
         mock_read_groups_file.return_value = self.groups_data
         crud=CRUD()
         self.assertEqual(crud.remove_group_member("3","1"),fieldValue)
+        pass
 
     @patch("crud.CRUD.read_groups_file")    
     def test_remove_group_member_Returns_false_for_invalid_group_member(
@@ -365,6 +389,28 @@ class TestCRUD(unittest.TestCase):
         mock_read_groups_file.return_value = self.groups_data
         crud=CRUD()
         self.assertEqual(crud.remove_group_member("1","3"),fieldValue)
+        pass
+
+    #Test pour aller chercher le cas ou le groupe est déjà vide
+    @patch("crud.CRUD.read_groups_file")    
+    def test_remove_group_already_empty(
+        self, mock_read_groups_file
+    ):
+       mock_read_groups_file.return_value={}
+       crud=CRUD()
+       self.assertFalse(crud.remove_group("1"))
+       pass
+
+    #Test pour aller chercher les cas d'exception dans update users
+    @patch("crud.CRUD.modify_users_file")  
+    @patch("crud.CRUD.read_users_file") 
+    def test_update_user_exception_case(
+        self, mock_read_users_file, mock_modify_users_file, 
+    ):
+        mock_read_users_file.return_value = {}
+        crud=CRUD()
+        self.assertFalse(crud.update_users("1","ArianeNini","Test"))
+        pass
 
     @patch("crud.CRUD.modify_groups_file")
     @patch("crud.CRUD.read_groups_file")    
@@ -376,6 +422,61 @@ class TestCRUD(unittest.TestCase):
         crud.remove_group_member("2","alex@gmail.com")
         mock_modify_groups_file.assert_called_once_with(self.groups_data)
         pass
+
+    #get_new_user_id
+    @patch("crud.CRUD.read_users_file")    
+    def test_get_new_user_id_Returns_correct_user_id(
+        self, mock_read_users_file
+    ):
+        mock_read_users_file.return_value={
+            "0": {
+                "name": "alex@gmail.com",
+                "Trust": 100,
+                "SpamN": 0,
+                "HamN": 20,
+                "Date_of_first_seen_message": 1596848266.0,
+                "Date_of_last_seen_message": 1596848266.0,
+                "Groups": ["default"],
+            },
+            "1": {
+                "name": "alex@gmail.com",
+                "Trust": 100,
+                "SpamN": 0,
+                "HamN": 20,
+                "Date_of_first_seen_message": 1596848266.0,
+                "Date_of_last_seen_message": 1596848266.0,
+                "Groups": ["default"],
+            }
+        }
+        crud=CRUD()
+        self.assertEqual(crud.get_new_user_id(),"2")
+
+    @patch("crud.CRUD.read_groups_file")    
+    def test_get_new_group_id_Returns_correct_user_id(
+        self, mock_read_groups_file
+    ):
+        mock_read_groups_file.return_value={
+            "0": {
+                "name": "default",
+                "Trust": 50,
+                "List_of_members": ["alex@gmail.com", "mark@mail.com"],
+            },
+            "1": {
+                "name": "friends",
+                "Trust": 90,
+                "List_of_members": ["alex@gmail.com"],
+            },
+        }
+        crud=CRUD()
+        self.assertEqual(crud.get_new_group_id(),"2")
+        
+
+    def test_convert_to_unix_Returns_correct_date(
+        self
+    ):
+        crud=CRUD()
+        self.assertEqual(crud.convert_to_unix("2021-02-15"), 1613347200.0)
+
 
 
 #if __name__ == "__main__":

@@ -46,13 +46,16 @@ def evaluate():
 
 if __name__ == "__main__":
 
-    # 1. Creation de vocabulaire.
+    # # 1. Creation de vocabulaire.
+    # vocab = VocabularyCreator()
+    # vocab.create_vocab()
+
+    # # 2. Classification des emails et initialisation de utilisateurs et groupes.
+    # renege = RENEGE()
+    # renege.classify_emails()
+
+    # #3. Evaluation de performance du modele avec la fonction evaluate()
+    # evaluate()
+
     vocab = VocabularyCreator()
-    vocab.create_vocab()
-
-    # 2. Classification des emails et initialisation de utilisateurs et groupes.
-    renege = RENEGE()
-    renege.classify_emails()
-
-    #3. Evaluation de performance du modele avec la fonction evaluate()
-    evaluate()
+    print(vocab.clean_text("if you allocate out about 50 million and gas gets 30 million of that 12 seems reasonable .\nwhat do you think \n"))
