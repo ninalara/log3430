@@ -14,7 +14,7 @@ class EmailAnalyzer:
 
 
 
-    def is_spam(self, subject_orig, body_orig, is_log_estimation, is_log_combination, clean_text_mode):
+    def is_spam(self, subject_orig, body_orig, is_log_estimation, is_log_combination, clean_text_mode, k):
         '''
         Description: fonction pour verifier si e-mail est spam ou ham,
         en calculant les probabilites d'etre spam et ham, 
@@ -23,48 +23,48 @@ class EmailAnalyzer:
         '''
         
         if is_log_estimation:
-            prob_message_subject = self.subject_spam_ham_prob_log(subject_orig, clean_text_mode)
-            prob_message_body = self.body_spam_ham_prob_log(subject_orig, clean_text_mode)
-            subject_spam = math.pow(prob_message_subject[0], 10)
-            body_spam = math.pow(prob_message_body[0], 10)
-            subject_ham = math.pow(prob_message_subject[1], 10)
-            body_ham = math.pow(prob_message_body[1], 10)
+            p_subject = self.log_p_spam_ham_subject(subject_orig, clean_text_mode)
+            p_body = self.log_p_spam_ham_body(subject_orig, clean_text_mode)
+            p_spam_subject = math.pow(p_subject[0], 10)
+            p_spam_body = math.pow(p_body[0], 10)
+            p_ham_subject = math.pow(p_subject[1], 10)
+            p_ham_body = math.pow(p_body[1], 10)
         else:
-            prob_message_subject = self.subject_spam_ham_prob(subject_orig, clean_text_mode)
-            prob_message_body = self.body_spam_ham_prob(body_orig, clean_text_mode)
-            subject_spam = prob_message_subject[0]
-            body_spam = prob_message_body[0]
-            subject_ham = prob_message_subject[1]
-            body_ham = prob_message_body[1]
+            p_subject = self.subject_spam_ham_prob(subject_orig, clean_text_mode)
+            p_body = self.body_spam_ham_prob(body_orig, clean_text_mode)
+            p_spam_subject = p_subject[0]
+            p_spam_body = p_body[0]
+            p_ham_subject = p_subject[1]
+            p_ham_body = p_body[1]
 
         if is_log_combination:
-            # il faut traiter les cas ou x dans log(x) est egal a 0 ou tres petit
-            if not subject_spam <= 0:
-                if not body_spam <= 0:
-                    prob_message_spam = k*math.log10(subject_spam) + (1-k)*math.log10(body_spam)
-                else:
-                    prob_message_spam = k * math.log10(subject_spam) + (1 - k) * body_spam
-            elif not body_spam <= 0:
-                prob_message_spam = k*subject_spam + (1 - k) * math.log10(body_spam)
-            else:
-                prob_message_spam = k * subject_spam + (1 - k) * body_spam
+            if p_spam_subject > 0:
+                if p_spam_body > 0:     #case where pspam_subject and pspam_body are both positive
+                    p_spam = k * math.log10(p_spam_subject) + (1 - k) * math.log10(p_spam_body)
+                else:                   #case where pspam_subject is positive and pspam_body is negative
+                    p_spam = k * math.log10(p_spam_subject) + (1 - k) * p_spam_body
+            elif p_spam_body > 0:       #case where pspam_subject is negative and pspam_body is positive
+                p_spam = k*p_spam_subject + (1 - k) * math.log10(p_spam_body)
+            else:                       #case where pspam_subject and pspam_body are both negative
+                p_spam = k * p_spam_subject + (1 - k) * p_spam_body
 
-            if not subject_ham <= 0:
-                if not body_ham <= 0:
-                    prob_message_ham = k * math.log10(subject_ham) + (1 - k) * math.log10(body_ham)
+            if p_ham_subject > 0:
+                if p_ham_body > 0:
+                    p_ham = k * math.log10(p_ham_subject) + (1 - k) * math.log10(p_ham_body)
                 else:
-                    prob_message_ham = math.log10(subject_ham) + (1 - k) * body_ham
-            elif body_ham <= 0:
-                prob_message_ham = k * subject_ham + (1 - k) * math.log10(body_ham)
+                    p_ham = math.log10(p_ham_subject) + (1 - k) * p_ham_body
+            elif p_ham_body <= 0:
+                p_ham = k * p_ham_subject + (1 - k) * math.log10(p_ham_body)
             else:
-                prob_message_ham = subject_ham + (1 - k) * body_ham
+                p_ham = p_ham_subject + (1 - k) * p_ham_body
         else:
-            prob_message_spam = k*subject_spam + (1-k)*body_spam
-            prob_message_ham = k*subject_ham + (1-k)*body_ham
+            p_spam = k * p_spam_subject + (1 - k) * p_spam_body
+            p_ham = k * p_ham_subject + (1 - k) * p_ham_body
 
-        max_prob = max(prob_message_spam, prob_message_ham)
-
-        return True if max_prob == prob_message_spam else False
+        if p_spam > p_ham:
+            return True
+        
+        return False
 
     # def is_spam(self, subject_orig, body_orig):
     #     '''
@@ -162,44 +162,44 @@ class EmailAnalyzer:
         que email body est ham.
         '''
 
-        body_spam_prob = 1
-        body_ham_prob = 1
-        probability_spam_ham = self.calculate_pspam_pham('train-emails.json')
+        p_spam_body = 1
+        p_ham_body = 1
+        pspam_pham = self.calculate_pspam_pham('train-emails.json')
 
-        prob_spam = probability_spam_ham[0]
-        prob_ham = probability_spam_ham[1]
+        p_spam = pspam_pham[0]
+        p_ham = pspam_pham[1]
 
         with open(self.vocab) as f:
             input_file = json.load(f)
 
-        # clean_body = self.cleaning.clean_text(body)
-        clean_body = self.clean_text(body, clean_text_mode)
+        # body = self.cleaning.clean_text(body)
+        body = self.clean_text(body, clean_text_mode)
 
-        num_words_spam_body = len(input_file["spam_body"])
-        num_words_ham_body = len(input_file["ham_body"])
+        n_spam_words = len(input_file["spam_body"])
+        n_ham_words = len(input_file["ham_body"])
 
-        for body_word in clean_body:
-            if body_word in input_file["spam_body"]:
-                body_spam_prob *= input_file["spam_body"][body_word]
-            elif body_word in input_file["ham_body"] or body_word in input_file["ham_sub"] or body_word in input_file["spam_sub"]:
-                body_spam_prob *= 1 / (num_words_spam_body + 1)
+        for word in body:
+            if word in input_file["spam_body"]:
+                p_spam_body *= input_file["spam_body"][word]
+            elif word in input_file["ham_body"] or word in input_file["ham_sub"] or word in input_file["spam_sub"]:
+                p_spam_body *= 1 / (n_spam_words + 1)
 
-            if body_word in input_file["ham_body"]:
-                body_ham_prob *= input_file["ham_body"][body_word]
-            elif body_word in input_file["spam_body"] or body_word in input_file["ham_sub"] or body_word in input_file["spam_sub"]:
-                body_ham_prob *= 1 / (num_words_ham_body + 1)
+            if word in input_file["ham_body"]:
+                p_ham_body *= input_file["ham_body"][word]
+            elif word in input_file["spam_body"] or word in input_file["ham_sub"] or word in input_file["spam_sub"]:
+                p_ham_body *= 1 / (n_ham_words + 1)
             '''
             for word in input_file["spam_body"]:
-                if body_word == word:
-                    body_spam_prob *= input_file["spam_body"][word]
+                if word == word:
+                    p_spam_body *= input_file["spam_body"][word]
             for word in input_file["ham_body"]:
-                if body_word == word:
-                    body_ham_prob *= input_file["ham_body"][word]
+                if word == word:
+                    p_ham_body *= input_file["ham_body"][word]
             '''
 
-        return prob_spam * body_spam_prob, prob_ham * body_ham_prob
+        return p_spam * p_spam_body, p_ham * p_ham_body
 
-    def body_spam_ham_prob_log(self, body, clean_text_mode):
+    def log_p_spam_ham_body(self, body, clean_text_mode):
         '''
         Description: fonction pour calculer la probabilite
         que le 'body' d'email est spam ou ham.
@@ -207,59 +207,49 @@ class EmailAnalyzer:
         que email body est ham.
         '''
 
-        body_spam_prob = 0
-        body_ham_prob = 0
-        probability_spam_ham = self.calculate_pspam_pham('train-emails.json')
+        p_spam_body = 0
+        p_ham_body = 0
 
-        if probability_spam_ham[0] > 0:
-            prob_spam = math.log10(probability_spam_ham[0])
+        pspam_pham = self.calculate_pspam_pham('train-emails.json')
+
+        if pspam_pham[0] > 0:
+            p_spam = math.log10(pspam_pham[0])
         else:
-            prob_spam = probability_spam_ham[0]
+            p_spam = pspam_pham[0]
 
-        if probability_spam_ham[1] > 0:
-            prob_ham = math.log10(probability_spam_ham[1])
+        if pspam_pham[1] > 0:
+            p_ham = math.log10(pspam_pham[1])
         else:
-            prob_ham = probability_spam_ham[1]
+            p_ham = pspam_pham[1]
 
-        with open(self.vocab) as f:
-            input_file = json.load(f)
+        with open(self.vocab) as inputfile:
+            input_file = json.load(inputfile)
 
-        # clean_body = self.cleaning.clean_text(body)
-        clean_body = self.clean_text(body, clean_text_mode)
+        body = self.clean_text(body, clean_text_mode)
 
-        num_words_spam_body = len(input_file["spam_body"])
-        num_words_ham_body = len(input_file["ham_body"])
+        n_spam_words = len(input_file["spam_body"])
+        n_ham_words = len(input_file["ham_body"])
 
-        for body_word in clean_body:
-            if body_word in input_file["spam_body"]:
-                if input_file["spam_body"][body_word] > 0:
-                    # pas certaine de comment modifier cette partie, pour l'instant += math.log10()()
-                    body_spam_prob += math.log10(input_file["spam_body"][body_word])
+        for word in body:
+            if word in input_file["spam_body"]:
+                if input_file["spam_body"][word] > 0:
+                    p_spam_body += math.log10(input_file["spam_body"][word])
                 else:
-                    body_spam_prob += input_file["spam_body"][body_word]
+                    p_spam_body += input_file["spam_body"][word]
 
-            elif body_word in input_file["ham_body"] or body_word in input_file["ham_sub"] or body_word in input_file["spam_sub"]:
-                body_spam_prob += math.log10(1 / (num_words_spam_body + 1))
+            elif word in input_file["spam_sub"] or word in input_file["spam_body"] or word in input_file["ham_sub"]:
+                p_spam_body += math.log10(1 / (n_spam_words + 1))
 
-            if body_word in input_file["ham_body"]:
-                if input_file["ham_body"][body_word] > 0:
-                    body_ham_prob += math.log10(input_file["ham_body"][body_word])
+            if word in input_file["ham_body"]:
+                if input_file["ham_body"][word] > 0:
+                    p_ham_body += math.log10(input_file["ham_body"][word])
                 else:
-                    body_ham_prob += input_file["ham_body"][body_word]
+                    p_ham_body += input_file["ham_body"][word]
 
-            elif body_word in input_file["spam_body"] or body_word in input_file["ham_sub"] or body_word in input_file["spam_sub"]:
-                #pareil
-                body_ham_prob += math.log10(1 / (num_words_ham_body + 1))
-            '''
-            for word in input_file["spam_body"]:
-                if body_word == word:
-                    body_spam_prob *= input_file["spam_body"][word]
-            for word in input_file["ham_body"]:
-                if body_word == word:
-                    body_ham_prob *= input_file["ham_body"][word]
-            '''
+            elif word in input_file["spam_sub"] or word in input_file["spam_body"] or word in input_file["ham_body"]:
+                p_ham_body += math.log10(1 / (n_spam_words + 1))
 
-        return prob_spam + body_spam_prob, prob_ham + body_ham_prob
+        return p_spam + p_spam_body, p_ham + p_ham_body
 
     def subject_spam_ham_prob(self, subject, clean_text_mode):
         '''
@@ -269,46 +259,46 @@ class EmailAnalyzer:
         que email subject est ham.
         '''
 
-        subject_spam_prob = 1
-        subject_ham_prob = 1
+        p_spam_subject = 1
+        p_ham_subject = 1
 
-        probability_spam_ham = self.calculate_pspam_pham('train-emails.json')
+        pspam_pham = self.calculate_pspam_pham('train-emails.json')
 
-        prob_spam = probability_spam_ham[0]
-        prob_ham = probability_spam_ham[1]
+        p_spam = pspam_pham[0]
+        p_ham = pspam_pham[1]
 
         with open(self.vocab) as f:
             input_file = json.load(f)
 
-        # clean_body = self.cleaning.clean_text(body)
+        # body = self.cleaning.clean_text(body)
         clean_sub = self.clean_text(subject, clean_text_mode)
 
-        n_words_spam_sub = len(input_file["spam_sub"])
-        n_words_ham_sub = len(input_file["ham_sub"])
+        n_spam_words = len(input_file["spam_sub"])
+        n_ham_words = len(input_file["ham_sub"])
 
         for word in clean_sub:
             if word in input_file["spam_sub"]:
-                subject_spam_prob *= input_file["spam_sub"][word]
+                p_spam_subject *= input_file["spam_sub"][word]
             elif word in input_file["spam_body"] or word in input_file["ham_sub"] or word in input_file["spam_sub"]:
-                subject_spam_prob *= 1 / (n_words_spam_sub + 1)
+                p_spam_subject *= 1 / (n_spam_words + 1)
 
             if word in input_file["ham_sub"]:
-                subject_ham_prob *= input_file["ham_sub"][word]
+                p_ham_subject *= input_file["ham_sub"][word]
             elif word in input_file["spam_body"] or word in input_file["ham_body"] or word in input_file["spam_sub"]:
-                subject_ham_prob *= 1 / (n_words_ham_sub + 1)
+                p_ham_subject *= 1 / (n_ham_words + 1)
             '''
             for word in input_file["spam_sub"]:
                 if word == word:
-                    subject_spam_prob *= input_file["spam_sub"][word]
+                    p_spam_subject *= input_file["spam_sub"][word]
             for word in input_file["ham_sub"]:
                 if word == word:
-                    subject_ham_prob *= input_file["ham_sub"][word]
+                    p_ham_subject *= input_file["ham_sub"][word]
             '''
 
-        return prob_spam * subject_spam_prob, prob_ham * subject_ham_prob
+        return p_spam * p_spam_subject, p_ham * p_ham_subject
 
 
-    def subject_spam_ham_prob_log(self, subject, clean_text_mode):
+    def log_p_spam_ham_subject(self, subject, clean_text_mode):
         '''
         Description: fonction pour calculer la probabilite
         que le sujet d'email est spam ou ham.
@@ -316,42 +306,52 @@ class EmailAnalyzer:
         que email subject est ham.
         '''
 
-        subject_spam_prob = 0
-        subject_ham_prob = 0
+        p_spam_subject = 0
+        p_ham_subject = 0
 
         pspam_pham = self.calculate_pspam_pham('train-set.json')
 
-        p_spam = math.log10(pspam_pham[0])
-        p_ham = math.log10(pspam_pham[1])
+        if pspam_pham[0] > 0:
+            p_spam = math.log10(pspam_pham[0])
+        else:
+            p_spam = pspam_pham[0]
+        
+        if pspam_pham[1] > 0:    
+            p_ham = math.log10(pspam_pham[1])
+        else:
+            p_ham = pspam_pham[1]
 
-        with open(self.vocab) as f:
-            input_file = json.load(f)
+        with open(self.vocab) as inputfile:
+            input_file = json.load(inputfile)
 
-        cleaned_sub = self.clean_text(subject, clean_text_mode)
+        subject = self.clean_text(subject, clean_text_mode)
 
-        n_words_spam_sub = len(input_file["spam_sub"])
-        n_words_ham_sub = len(input_file["ham_sub"])
+        n_spam_words = len(input_file["spam_sub"])
+        n_spam_words = len(input_file["ham_sub"])
 
-        for word in cleaned_sub:
+        for word in subject:
             if word in input_file["spam_sub"]:
                 if input_file["spam_sub"][word] > 0:
-                    subject_spam_prob += math.log10(input_file["spam_sub"][word])
+                    p_spam_subject += math.log10(input_file["spam_sub"][word])
                 else:
-                    subject_spam_prob += (input_file["spam_sub"][word])
+                    p_spam_subject += (input_file["spam_sub"][word])
 
-            elif word in input_file["spam_body"] or word in input_file["ham_sub"] or word in input_file["spam_sub"]:
-                subject_spam_prob += math.log10(1 / (n_words_spam_sub + 1))
+            elif word in input_file["spam_sub"] or word in input_file["spam_body"] or word in input_file["ham_sub"]:
+                p_spam_subject += math.log10(1 / (n_spam_words + 1))
 
             if word in input_file["ham_sub"]:
                 if input_file["ham_sub"][word] > 0:
-                    subject_ham_prob += math.log10(input_file["ham_sub"][word])
+                    p_ham_subject += math.log10(input_file["ham_sub"][word])
                 else:
-                    subject_ham_prob += input_file["ham_sub"][word]
+                    p_ham_subject += input_file["ham_sub"][word]
 
-            elif word in input_file["spam_body"] or word in input_file["ham_body"] or word in input_file["spam_sub"]:
-                subject_ham_prob += math.log10(1 / (n_words_ham_sub + 1))
+            elif word in input_file["spam_sub"] or word in input_file["spam_body"] or word in input_file["ham_body"]:
+                p_ham_subject += math.log10(1 / (n_spam_words + 1))
+        
+        p_spam = p_spam + p_spam_subject
+        p_ham = p_ham + p_ham_subject
 
-        return p_spam + subject_spam_prob, p_ham + subject_ham_prob
+        return p_spam, p_ham
     
     def calculate_pspam_pham(self, file):
     '''

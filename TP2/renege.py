@@ -54,13 +54,13 @@ class RENEGE:
             
         return trust
 
-    def classify_emails(self):
+    def classify_emails(self, mode):
         '''
         Description: fonction pour commencer l'analyse des e-mails.
         Sortie: bool, 'True' pour succes, 'False' dans le cas de failure.
         '''
         try:
-            self.process_email(self.get_email())
+            self.process_email(self.get_email(), mode)
             return True
         except Exception as e:
             print("Error!", e.__class__, "occurred.")
@@ -68,7 +68,7 @@ class RENEGE:
             return False
 
 
-    def process_email(self, new_emails):
+    def process_email(self, new_emails, mode):
         '''
         Description: fonction pour analyser chaque nouvel e-mail dans le 
         dictionare. Elle gere l'ajout des nouveux utilisateurs et/ou modification
@@ -100,7 +100,12 @@ class RENEGE:
                 if not self.crud.add_new_user(name, date):
                     return False
 
-                user_id = self.crud.get_user_id(name) 
+                user_id = self.crud.get_user_id(name)
+
+            if mode == 1:
+                is_spam = self.is_spam1(email)
+            elif mode == 2:
+                is_spam = self.is_spam2(email)
 
             # Update user's emails info
             if is_spam == "true":
@@ -109,6 +114,7 @@ class RENEGE:
             else:
                 if not self.update_user_info(user_id, date, 0, 1):
                     return False
+            
 
             # Update groups data
             groups = self.crud.get_user_data(user_id, "Groups")
@@ -124,6 +130,37 @@ class RENEGE:
         print("\n")
 
         return True
+
+    def is_spam1(self, email):
+
+        user_id = self.crud.get_user_id(email["From"])
+        trust = self.crud.get_user_data(user_id, "Trust")
+        first_seen_message = self.crud.get_user_data(user_id, "Date_of_first_seen_message")
+        last_seen_message = self.crud.get_user_data(user_id, "Date_of_last_seen_message")
+
+        p = email["Spam"] == "true"
+        h = (float(last_seen_message - first_seen_message)) / (60 * 60 * 24) > 31
+        t1 = trust < 60
+        t2 = trust < 70
+        t3 = trust > 75
+
+        return (p and ((h and t1) or t2)) or (h and t2 and not t3)
+
+    def is_spam2(self, email):
+        '''
+        Description: fonction qui calcule la probabilité de spam selon l'équation 2 de
+        l'énoncé, soit S = P + ¬T3 ∗ T2
+        '''
+
+        user_id = self.crud.get_user_id(email["From"])
+        trust = self.crud.get_user_data(user_id, "Trust")
+
+        p = email["Spam"] == "true"
+        t2 = trust < 70
+        t3 = trust > 75
+
+        return p or (2not t3 and t2)
+
 
     def update_user_info(self, user_id, new_user_date, new_email_spam, new_email_ham):
         '''
