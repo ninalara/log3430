@@ -164,7 +164,7 @@ class EmailAnalyzer:
 
         p_spam_body = 1
         p_ham_body = 1
-        pspam_pham = self.calculate_pspam_pham('train-emails.json')
+        pspam_pham = self.calculate_pspam_pham('train_set.json')
 
         p_spam = pspam_pham[0]
         p_ham = pspam_pham[1]
@@ -175,26 +175,26 @@ class EmailAnalyzer:
         # body = self.cleaning.clean_text(body)
         body = self.clean_text(body, clean_text_mode)
 
-        n_spam_words = len(input_file["spam_body"])
-        n_ham_words = len(input_file["ham_body"])
+        n_spam_words = len(input_file["p_body_spam"])
+        n_ham_words = len(input_file["p_body_ham"])
 
         for word in body:
-            if word in input_file["spam_body"]:
-                p_spam_body *= input_file["spam_body"][word]
-            elif word in input_file["ham_body"] or word in input_file["ham_sub"] or word in input_file["spam_sub"]:
+            if word in input_file["p_body_spam"]:
+                p_spam_body *= input_file["p_body_spam"][word]
+            elif word in input_file["p_body_ham"] or word in input_file["p_sub_ham"] or word in input_file["p_sub_spam"]:
                 p_spam_body *= 1 / (n_spam_words + 1)
 
-            if word in input_file["ham_body"]:
-                p_ham_body *= input_file["ham_body"][word]
-            elif word in input_file["spam_body"] or word in input_file["ham_sub"] or word in input_file["spam_sub"]:
+            if word in input_file["p_body_ham"]:
+                p_ham_body *= input_file["p_body_ham"][word]
+            elif word in input_file["p_body_spam"] or word in input_file["p_sub_ham"] or word in input_file["p_sub_spam"]:
                 p_ham_body *= 1 / (n_ham_words + 1)
             '''
-            for word in input_file["spam_body"]:
+            for word in input_file["p_body_spam"]:
                 if word == word:
-                    p_spam_body *= input_file["spam_body"][word]
-            for word in input_file["ham_body"]:
+                    p_spam_body *= input_file["p_body_spam"][word]
+            for word in input_file["p_body_ham"]:
                 if word == word:
-                    p_ham_body *= input_file["ham_body"][word]
+                    p_ham_body *= input_file["p_body_ham"][word]
             '''
 
         return p_spam * p_spam_body, p_ham * p_ham_body
@@ -210,7 +210,7 @@ class EmailAnalyzer:
         p_spam_body = 0
         p_ham_body = 0
 
-        pspam_pham = self.calculate_pspam_pham('train-emails.json')
+        pspam_pham = self.calculate_pspam_pham('train_set.json')
 
         if pspam_pham[0] > 0:
             p_spam = math.log10(pspam_pham[0])
@@ -227,26 +227,26 @@ class EmailAnalyzer:
 
         body = self.clean_text(body, clean_text_mode)
 
-        n_spam_words = len(input_file["spam_body"])
-        n_ham_words = len(input_file["ham_body"])
+        n_spam_words = len(input_file["p_body_spam"])
+        n_ham_words = len(input_file["p_body_ham"])
 
         for word in body:
-            if word in input_file["spam_body"]:
-                if input_file["spam_body"][word] > 0:
-                    p_spam_body += math.log10(input_file["spam_body"][word])
+            if word in input_file["p_body_spam"]:
+                if input_file["p_body_spam"][word] > 0:
+                    p_spam_body += math.log10(input_file["p_body_spam"][word])
                 else:
-                    p_spam_body += input_file["spam_body"][word]
+                    p_spam_body += input_file["p_body_spam"][word]
 
-            elif word in input_file["spam_sub"] or word in input_file["spam_body"] or word in input_file["ham_sub"]:
+            elif word in input_file["p_sub_spam"] or word in input_file["p_body_spam"] or word in input_file["p_sub_ham"]:
                 p_spam_body += math.log10(1 / (n_spam_words + 1))
 
-            if word in input_file["ham_body"]:
-                if input_file["ham_body"][word] > 0:
-                    p_ham_body += math.log10(input_file["ham_body"][word])
+            if word in input_file["p_body_ham"]:
+                if input_file["p_body_ham"][word] > 0:
+                    p_ham_body += math.log10(input_file["p_body_ham"][word])
                 else:
-                    p_ham_body += input_file["ham_body"][word]
+                    p_ham_body += input_file["p_body_ham"][word]
 
-            elif word in input_file["spam_sub"] or word in input_file["spam_body"] or word in input_file["ham_body"]:
+            elif word in input_file["p_sub_spam"] or word in input_file["p_body_spam"] or word in input_file["p_body_ham"]:
                 p_ham_body += math.log10(1 / (n_spam_words + 1))
 
         return p_spam + p_spam_body, p_ham + p_ham_body
@@ -262,7 +262,7 @@ class EmailAnalyzer:
         p_spam_subject = 1
         p_ham_subject = 1
 
-        pspam_pham = self.calculate_pspam_pham('train-emails.json')
+        pspam_pham = self.calculate_pspam_pham('train_set.json')
 
         p_spam = pspam_pham[0]
         p_ham = pspam_pham[1]
@@ -273,27 +273,19 @@ class EmailAnalyzer:
         # body = self.cleaning.clean_text(body)
         clean_sub = self.clean_text(subject, clean_text_mode)
 
-        n_spam_words = len(input_file["spam_sub"])
-        n_ham_words = len(input_file["ham_sub"])
+        n_spam_words = len(input_file["p_sub_spam"])
+        n_ham_words = len(input_file["p_sub_ham"])
 
         for word in clean_sub:
-            if word in input_file["spam_sub"]:
-                p_spam_subject *= input_file["spam_sub"][word]
-            elif word in input_file["spam_body"] or word in input_file["ham_sub"] or word in input_file["spam_sub"]:
+            if word in input_file["p_sub_spam"]:
+                p_spam_subject *= input_file["p_sub_spam"][word]
+            elif word in input_file["p_body_spam"] or word in input_file["p_sub_ham"] or word in input_file["p_sub_spam"]:
                 p_spam_subject *= 1 / (n_spam_words + 1)
 
-            if word in input_file["ham_sub"]:
-                p_ham_subject *= input_file["ham_sub"][word]
-            elif word in input_file["spam_body"] or word in input_file["ham_body"] or word in input_file["spam_sub"]:
+            if word in input_file["p_sub_ham"]:
+                p_ham_subject *= input_file["p_sub_ham"][word]
+            elif word in input_file["p_body_spam"] or word in input_file["p_body_ham"] or word in input_file["p_sub_spam"]:
                 p_ham_subject *= 1 / (n_ham_words + 1)
-            '''
-            for word in input_file["spam_sub"]:
-                if word == word:
-                    p_spam_subject *= input_file["spam_sub"][word]
-            for word in input_file["ham_sub"]:
-                if word == word:
-                    p_ham_subject *= input_file["ham_sub"][word]
-            '''
 
         return p_spam * p_spam_subject, p_ham * p_ham_subject
 
@@ -309,7 +301,7 @@ class EmailAnalyzer:
         p_spam_subject = 0
         p_ham_subject = 0
 
-        pspam_pham = self.calculate_pspam_pham('train-set.json')
+        pspam_pham = self.calculate_pspam_pham('train_set.json')
 
         if pspam_pham[0] > 0:
             p_spam = math.log10(pspam_pham[0])
@@ -326,26 +318,26 @@ class EmailAnalyzer:
 
         subject = self.clean_text(subject, clean_text_mode)
 
-        n_spam_words = len(input_file["spam_sub"])
-        n_spam_words = len(input_file["ham_sub"])
+        n_spam_words = len(input_file["p_sub_spam"])
+        n_spam_words = len(input_file["p_sub_ham"])
 
         for word in subject:
-            if word in input_file["spam_sub"]:
-                if input_file["spam_sub"][word] > 0:
-                    p_spam_subject += math.log10(input_file["spam_sub"][word])
+            if word in input_file["p_sub_spam"]:
+                if input_file["p_sub_spam"][word] > 0:
+                    p_spam_subject += math.log10(input_file["p_sub_spam"][word])
                 else:
-                    p_spam_subject += (input_file["spam_sub"][word])
+                    p_spam_subject += (input_file["p_sub_spam"][word])
 
-            elif word in input_file["spam_sub"] or word in input_file["spam_body"] or word in input_file["ham_sub"]:
+            elif word in input_file["p_sub_spam"] or word in input_file["p_body_spam"] or word in input_file["p_sub_ham"]:
                 p_spam_subject += math.log10(1 / (n_spam_words + 1))
 
-            if word in input_file["ham_sub"]:
-                if input_file["ham_sub"][word] > 0:
-                    p_ham_subject += math.log10(input_file["ham_sub"][word])
+            if word in input_file["p_sub_ham"]:
+                if input_file["p_sub_ham"][word] > 0:
+                    p_ham_subject += math.log10(input_file["p_sub_ham"][word])
                 else:
-                    p_ham_subject += input_file["ham_sub"][word]
+                    p_ham_subject += input_file["p_sub_ham"][word]
 
-            elif word in input_file["spam_sub"] or word in input_file["spam_body"] or word in input_file["ham_body"]:
+            elif word in input_file["p_sub_spam"] or word in input_file["p_body_spam"] or word in input_file["p_body_ham"]:
                 p_ham_subject += math.log10(1 / (n_spam_words + 1))
         
         p_spam = p_spam + p_spam_subject
@@ -354,12 +346,13 @@ class EmailAnalyzer:
         return p_spam, p_ham
     
     def calculate_pspam_pham(self, file):
-    '''
+        '''
         Description: fonction qui calcule la probabilite
         qu'un message soit spam ou ham dans un fichier
         Sortie: int, int: P(spam), P(ham)
         '''
-        n_spam, n_ham = 0
+        n_spam = 0
+        n_ham = 0
 
         with open(file) as data:
             input_file = json.load(data)
