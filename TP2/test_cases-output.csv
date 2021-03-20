@@ -1,9 +1,3 @@
-# ACTS Test Suite Generation: Sun Mar 14 21:17:47 GMT-05:00 2021
-#  '*' represents don't care value 
-# Degree of interaction coverage: 3
-# Number of parameters: 5
-# Maximum number of values per parameter: 4
-# Number of configurations: 48
 estimation_mode,combination_mode,word_frequency,clean_text_mode,spam_definition
 0,0,1,0,0
 1,1,1,0,1
