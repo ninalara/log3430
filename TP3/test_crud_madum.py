@@ -16,27 +16,37 @@ class TestCRUDMadum(unittest.TestCase):
             },
         }
         self.test_user= {
-            "1": {
+            "0": {
                 "name": "wow@gmail.com",
-                "Trust": 100,
+                "Trust": 50,
                 "SpamN": 0,
-                "HamN": 20,
-                "Date_of_first_seen_message": 1596848266.0,
-                "Date_of_last_seen_message": 1596848266.0,
+                "HamN": 0,
+                "Date_of_first_seen_message": 1612828800.0,
+                "Date_of_last_seen_message": 1612828800.0,
                 "Groups": ["default"],
             },
         }
 
         self.test_user_2= {
-            "1": {
+            "0": {
                 "name": "wow@gmail.com",
-                "Trust": 100,
+                "Trust": 50,
                 "SpamN": 0,
-                "HamN": 20,
-                "Date_of_first_seen_message": 1596848266.0,
-                "Date_of_last_seen_message": 1596848266.0,
-                "Groups": ["default", "friends"],
+                "HamN": 0,
+                "Date_of_first_seen_message": 1612828800.0,
+                "Date_of_last_seen_message": 1612828800.0,
+                "Groups": ["friends"],
+                
             },
+            "1" : {
+                "name": "mark@mail.com",
+                "Trust": 50,
+                "SpamN": 0,
+                "HamN": 0,
+                "Date_of_first_seen_message": 1612828800.0,
+                "Date_of_last_seen_message": 1612828800.0,
+                "Groups": ["default"],
+            }
         }
         # c'est un exemple de données "mock" à utiliser comme "return value" de read_groups_file
         self.groups_data = {
@@ -58,17 +68,22 @@ class TestCRUDMadum(unittest.TestCase):
     def test_add_new_user_1(self):
         crud=CRUD()
         crud.add_new_user("bob@gmail.com", "2021-02-09")
-        #crud.update_users(1,"name","wow@gmail.com")
-        #crud.remove_user(2)
-        #crud.remove_user_group('1',"friends")
-        print(self.users_data)
-        test_user=self.test_user
-        self.assertEqual(self.users_data,test_user)
+        crud.add_new_user("alex@gmail.com", "2021-02-10")
+        crud.update_users(0,"name","wow@gmail.com")
+        user_data = crud.remove_user(1)
+        self.assertEqual(user_data,self.test_user)
         
 
-    # def test_remove_user_group_1(self):
-    #     crud = CRUD()
-    #     crud.remove_user_group("1", )
+    def test_remove_user_group_1(self):
+        crud = CRUD()        
+        crud.add_new_user("alex@gmail.com", "2021-02-09")
+        crud.add_new_user("mark@mail.com", "2021-02-09")
+        crud.add_new_group("default", 50, ["alex@gmail.com", "mark@mail.com"],)
+        crud.add_new_group("friends",90, ["alex@gmail.com"],)        
+        crud.update_users(0,"name","wow@gmail.com")
+        user_data = crud.remove_user_group("0", "default")
+        self.assertEqual(user_data,self.test_user_2)
+
         
         
 

@@ -18,8 +18,10 @@ class CRUD:
 
         # Load data from the files
         try:
-            self.users_data = self.read_users_file()
-            self.groups_data = self.read_groups_file()
+            #self.users_data = self.read_users_file()
+            #self.groups_data = self.read_groups_file()
+            self.users_data = {}
+            self.groups_data = {}
         except:
             # We could not load the data
             self.users_data = {}
@@ -78,7 +80,6 @@ class CRUD:
         la description du lab
         Sortie: bool, 'True' pour succes, 'False' dans le cas de failure.
         '''
-        print("pee")
         # Check the unicity of the email address
         if user_email in self.users_lookup:
             return False
@@ -109,7 +110,6 @@ class CRUD:
         self.update_groups(default_id, "List_of_members", default_list)
 
         # Success
-        print(self.users_data)
         return self.modify_users_file(self.users_data)
 
     def add_new_group(self, name, trust, members_list):
@@ -158,7 +158,6 @@ class CRUD:
         et retourne le dictionaire
         Sortie: dictionare avec les utilisateurs 
         '''
-
         return self.users_data
 
     def read_groups_file(self):
@@ -240,9 +239,8 @@ class CRUD:
         d'utilisateurs dans le fichiers 'users.json'
         Sortie: bool, 'True' pour succes, 'False' dans le cas de failure.
         '''
-        with open(self.users_file, "w") as outfile:
-            json.dump(data, outfile)
-        return True
+        self.users_data = data
+        return self.users_data
 
     def modify_groups_file(self, data):
         '''
@@ -273,7 +271,6 @@ class CRUD:
         if field not in self.users_data[user_id]:
             return False
 
-        print("OK")
         try:
             # Update data
             if field == "name":
