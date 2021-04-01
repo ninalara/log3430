@@ -54,6 +54,10 @@ class TestCRUDMadum(unittest.TestCase):
         self.assertEqual(crud.read_groups_file(), {})
 
     # Tests transformateurs
+    # adds new user
+    # adds a trust of 60 to 2
+    # removes default user group 2
+    # removes user 1
     def test_crud_add_new_user_1(self):
         crud = CRUD(False)
         crud.add_new_user("leffersonjam@gmail.com", "2020-11-16")
@@ -66,6 +70,10 @@ class TestCRUDMadum(unittest.TestCase):
         modified_user["Trust"] = 60
         self.assertEqual(crud.read_users_file(), {'2': modified_user})
 
+    # adds new user
+    # adds a group called friends
+    # removes user 1
+    # removes user group default 2
     def test_crud_add_new_user_2(self):
         crud = CRUD(False)
         crud.add_new_user("leffersonjam@gmail.com", "2020-11-16")
@@ -78,7 +86,10 @@ class TestCRUDMadum(unittest.TestCase):
         expected_user["Groups"].remove('default')
         print(crud.read_users_file())
         self.assertEqual(crud.read_users_file(), {'2': expected_user})
-
+    # adds new user
+    # remove user 2
+    # add trust of 75 to 1
+    # removes user group default 1
     def test_crud_add_new_user_3(self):
         crud = CRUD(False)
         crud.add_new_user("leffersonjam@gmail.com", "2020-11-16")
@@ -90,7 +101,10 @@ class TestCRUDMadum(unittest.TestCase):
         expected_user["Groups"].remove('default')
         expected_user["Trust"] = 75
         self.assertEqual(crud.read_users_file(), {'1': expected_user})
-
+    # adds new user
+    # remove user 2
+    # remove user group default 1
+    # add trust of 80 user 1
     def test_crud_add_new_user_4(self):
         crud = CRUD(False)
         crud.add_new_user("leffersonjam@gmail.com", "2020-11-16")
@@ -103,6 +117,10 @@ class TestCRUDMadum(unittest.TestCase):
         expected_user["Trust"] = 80
         self.assertEqual(crud.read_users_file(), {'1': expected_user})
 
+    # adds new user
+    # remove user group default 1
+    # add trust of spamn to 2
+    # remove user 1
     def test_crud_add_new_user_5(self):
         crud = CRUD(False)
         crud.add_new_user("leffersonjam@gmail.com", "2020-11-16")
@@ -113,7 +131,10 @@ class TestCRUDMadum(unittest.TestCase):
         expected_user = self.user_2
         expected_user["SpamN"] = 1
         self.assertEqual(crud.read_users_file(), {'2': expected_user})
-
+    # adds new user
+    # remove user group colleagues 1
+    # remove user 2
+    # add trust of 40 to 1
     def test_crud_add_new_user_6(self):
         crud = CRUD(False)
         crud.add_new_user("leffersonjam@gmail.com", "2020-11-16")

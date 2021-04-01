@@ -430,7 +430,7 @@ class CRUD:
 
         # Check existence       
         if user_id not in self.users_data:
-            return False 
+            return {} 
         
         try:
             # Get names 
@@ -439,13 +439,13 @@ class CRUD:
             # Check if the user is in the group
             groups = self.get_user_data(user_id, "Groups")
             if group_name not in groups:
-                return False
+                return {}
 
             # Remove group
             self.users_data[user_id]["Groups"].remove(group_name)
 
         except RuntimeError:
-            return False
+            return {}
 
         return self.modify_users_file(self.users_data)
 
