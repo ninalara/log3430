@@ -20,7 +20,24 @@ class CRUD:
         try:
             #self.users_data = self.read_users_file()
             #self.groups_data = self.read_groups_file()
-            self.users_data = {}
+            self.users_data = {
+                "0" : {
+                    "name": "mark@mail.com",
+                    "Trust": 50,
+                    "SpamN": 0,
+                    "HamN": 0,
+                    "Date_of_first_seen_message": 1612828800.0,
+                    "Date_of_last_seen_message": 1612828800.0,
+                    "Groups": ['default'],
+                },
+            }
+            self.groups_data = {
+                "1": {
+                "name": "default",
+                "Trust": 50,
+                "List_of_members": ["mark@mail.com"],
+                },
+            }
             self.groups_data = {}
         except:
             # We could not load the data

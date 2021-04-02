@@ -72,7 +72,6 @@ class TestCRUDMadum(unittest.TestCase):
 
     def test_add_new_user_1(self):
         crud=CRUD()
-        crud.add_new_user("mark@gmail.com", "2021-02-09")
         crud.add_new_user("alex@gmail.com", "2021-02-10")
         crud.update_users(0, "name", "wow@gmail.com")
         crud.remove_user_group('2', 'default')
@@ -81,7 +80,6 @@ class TestCRUDMadum(unittest.TestCase):
 
     def test_add_new_user_2(self):
         crud=CRUD()
-        crud.add_new_user("alex@gmail.com", "2021-02-10")
         crud.add_new_user("wow@gmail.com", "2021-02-09")
         crud.update_users(1, "Trust", 70)
         crud.remove_user(0)
@@ -90,7 +88,6 @@ class TestCRUDMadum(unittest.TestCase):
 
     def test_add_new_user_3(self):
         crud=CRUD()
-        crud.add_new_user("bob@gmail.com", "2021-02-09")
         crud.add_new_user("wow@gmail.com", "2021-02-09")
         crud.remove_user(0)
         crud.remove_user_group('1', 'default')
@@ -99,7 +96,6 @@ class TestCRUDMadum(unittest.TestCase):
 
     def test_add_new_user_4(self):
         crud=CRUD()
-        crud.add_new_user("mark@mail.com", "2021-02-09")
         crud.add_new_user("wow@gmail.com", "2021-02-09")
         crud.remove_user(1)
         crud.update_users(0, "Trust", 60)
@@ -112,7 +108,6 @@ class TestCRUDMadum(unittest.TestCase):
 
     def test_add_new_user_5(self):
         crud=CRUD()
-        crud.add_new_user("mark@mail.com", "2021-02-09")
         crud.add_new_user("wow@gmail.com", "2021-02-09")
         crud.remove_user_group('0', 'default')
         crud.update_users(1, "Trust", 70)
@@ -125,14 +120,13 @@ class TestCRUDMadum(unittest.TestCase):
 
     def test_add_new_user_6(self):
         crud=CRUD()
-        crud.add_new_user("mark@mail.com", "2021-02-09")
-        crud.remove_user_group('0', 'default')
-        crud.update_users(1, "Trust", 70)
         crud.add_new_user("wow@gmail.com", "2021-02-09")
-        user_data = crud.remove_user(0)
+        crud.remove_user_group('0', 'default')
+        crud.remove_user(1)
+        user_data = crud.update_users(0, "Trust", 70)
 
-        test_user = self.test_user_3
-        test_user['1']['Groups'].append('default')
+        test_user = self.test_user_2
+        test_user['0']['Trust'] = 70
 
         self.assertEqual(user_data, test_user)
 
