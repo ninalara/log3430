@@ -18,27 +18,8 @@ class CRUD:
 
         # Load data from the files
         try:
-            #self.users_data = self.read_users_file()
-            #self.groups_data = self.read_groups_file()
-            self.users_data = {
-                "0" : {
-                    "name": "mark@mail.com",
-                    "Trust": 50,
-                    "SpamN": 0,
-                    "HamN": 0,
-                    "Date_of_first_seen_message": 1612828800.0,
-                    "Date_of_last_seen_message": 1612828800.0,
-                    "Groups": ['default'],
-                },
-            }
-            self.groups_data = {
-                "1": {
-                "name": "default",
-                "Trust": 50,
-                "List_of_members": ["mark@mail.com"],
-                },
-            }
-            self.groups_data = {}
+            self.users_data = self.read_users_file()
+            self.groups_data = self.read_groups_file()
         except:
             # We could not load the data
             self.users_data = {}
@@ -97,6 +78,7 @@ class CRUD:
         la description du lab
         Sortie: bool, 'True' pour succes, 'False' dans le cas de failure.
         '''
+
         # Check the unicity of the email address
         if user_email in self.users_lookup:
             return False
@@ -175,7 +157,8 @@ class CRUD:
         et retourne le dictionaire
         Sortie: dictionare avec les utilisateurs 
         '''
-        return self.users_data
+        with open(self.users_file) as users_file:
+            return json.load(users_file)
 
     def read_groups_file(self):
         '''
@@ -256,8 +239,9 @@ class CRUD:
         d'utilisateurs dans le fichiers 'users.json'
         Sortie: bool, 'True' pour succes, 'False' dans le cas de failure.
         '''
-        self.users_data = data
-        return self.users_data
+        with open(self.users_file, "w") as outfile:
+            json.dump(data, outfile)
+        return True
 
     def modify_groups_file(self, data):
         '''
@@ -288,6 +272,7 @@ class CRUD:
         if field not in self.users_data[user_id]:
             return False
 
+        print("OK")
         try:
             # Update data
             if field == "name":

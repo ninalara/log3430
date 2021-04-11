@@ -12,7 +12,7 @@ class VocabularyCreator:
         self.vocabulary = "vocabulary.json"
         self.voc_data   = {}
     
-    def compute_proba(self, data, word_freq, total):
+    def compute_proba(self, data, total):
         '''
         Description: calcul la probabilité de chaque mot du dictionnaire basé sur
         sa fréquence d'occurence
@@ -20,14 +20,11 @@ class VocabularyCreator:
         '''
         proba_dict = {}
         for wd in data:
-            if data[wd] < 1 or data[wd] > 4:
-                continue
-            elif data[w] == word_freq:
-                proba_dict[wd] = data[wd] / total
+            proba_dict[wd] = data[wd] / total
 
         return proba_dict
 
-    def create_vocab(self, word_freq, mode):
+    def create_vocab(self):
         '''
         Description: fonction pour creer le vocabulaire des mots presents
         dans les e-mails spam et ham et le sauvegarder dans le fichier
@@ -67,7 +64,7 @@ class VocabularyCreator:
                 is_spam     = True
 
             # Analyze the subject 
-            subject = self.cleaning.clean_text(subject, mode)
+            subject = self.cleaning.clean_text(subject)
             if is_spam:
                 for wd in subject:
                     total_occ_spam_sub += 1
@@ -86,7 +83,7 @@ class VocabularyCreator:
                         occ_ham_sub[wd] += 1
 
             # Analyze the body
-            body = self.cleaning.clean_text(body, mode)
+            body = self.cleaning.clean_text(body)
             if is_spam:
                 for wd in body:
                     total_occ_spam_bod += 1
@@ -105,10 +102,10 @@ class VocabularyCreator:
                         occ_ham_bod[wd] += 1
 
         # Create the data dictionary
-        p_sub_spam  = self.compute_proba(occ_spam_sub, word_freq, total_occ_spam_sub)
-        p_sub_ham   = self.compute_proba(occ_ham_sub, word_freq, total_occ_ham_sub)
-        p_body_spam = self.compute_proba(occ_spam_bod, word_freq, total_occ_spam_bod)
-        p_body_ham  = self.compute_proba(occ_ham_bod, word_freq, total_occ_ham_bod)
+        p_sub_spam  = self.compute_proba(occ_spam_sub, total_occ_spam_sub)
+        p_sub_ham   = self.compute_proba(occ_ham_sub, total_occ_ham_sub)
+        p_body_spam = self.compute_proba(occ_spam_bod, total_occ_spam_bod)
+        p_body_ham  = self.compute_proba(occ_ham_bod, total_occ_ham_bod)
         self.voc_data = {
            "p_sub_spam": p_sub_spam,
            "p_sub_ham": p_sub_ham,
@@ -137,5 +134,5 @@ class VocabularyCreator:
         except:
             return False
     
-    def clean_text(self, text, mode):
-        return self.cleaning.clean_text(text, mode)
+    def clean_text(self, text):
+        return self.cleaning.clean_text(text)

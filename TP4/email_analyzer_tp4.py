@@ -7,8 +7,8 @@ from text_cleaner import TextCleaning
 class EmailAnalyzer:
     """Classe pour classifier les e-mails comme spam ou non spam (ham)"""
 
-    def __init__(self):
-        self.vocab    = "vocabulary.json"
+    def __init__(self, vocab_file):
+        self.vocab    = vocab_file
         self.cleaning = TextCleaning()
         self.voc_data = {}
 
