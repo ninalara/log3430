@@ -2,6 +2,7 @@ import unittest
 from email_analyzer_tp4 import EmailAnalyzer
 import json
 import random
+import re
 
 class TestMain(unittest.TestCase):
 
@@ -77,10 +78,10 @@ class TestMain(unittest.TestCase):
             total += 1
         
         if(is_test):
-            print("\nInitial Accuracy: ",self.testbaseAccuracy)
+            print("\nInitial Accuracy: ", round(self.testbaseAccuracy, 2))
         else:
-            print("\nInitial Accuracy: ",self.trainbaseAccuracy)
-        print("\nAccuracy: ", round((tp + tn) / (tp + tn + fp + fn), 2))
+            print("\nInitial Accuracy: ", round(self.trainbaseAccuracy, 2))
+        print("Accuracy: ", round((tp + tn) / (tp + tn + fp + fn), 2))
         # print("Precision: ", round(tp / (tp + fp), 2))
         # print("Recall: ", round(tp / (tp + fn), 2))
         return (tp + tn) / (tp + tn + fp + fn)
@@ -89,7 +90,7 @@ class TestMain(unittest.TestCase):
         self.trainbaseAccuracy=self.init_evaluate('vocabulary.json', 'train_set.json')
         self.testbaseAccuracy=self.init_evaluate('vocabulary.json', 'test_set.json')
 
-    def test_permutate_emails_train(self):
+    def test_permutative_emails_train(self):
         print("\nchangement de l’ordre des e-mails dans le train dataset\n")
         with open("train_set.json") as email_file:
             new_emails = json.load(email_file)
@@ -98,11 +99,11 @@ class TestMain(unittest.TestCase):
             json.dump(new_emails, outfile)
         newAccuracy = self.evaluate('vocabulary.json', 'train700_mails.json', False)
         difference = abs(newAccuracy - self.trainbaseAccuracy)
-        print("difference: ", difference)
+        print("Difference: ", difference)
         print("\n")
         self.assertLessEqual(difference, 0.03)
     
-    def test_permutate_emails_test(self):
+    def test_permutative_emails_test(self):
         print("\nchangement de l’ordre des e-mails dans le test dataset\n")
         with open("test_set.json") as email_file:
             new_emails = json.load(email_file)
@@ -111,11 +112,11 @@ class TestMain(unittest.TestCase):
             json.dump(new_emails, outfile)
         newAccuracy = self.evaluate('vocabulary.json', 'test300_mails.json', True)
         difference = abs(newAccuracy - self.testbaseAccuracy)
-        print("difference: ", difference)
+        print("Difference: ", difference)
         print("\n")
         self.assertLessEqual(difference, 0.03)
     
-    def test_permutate_words_train(self):
+    def test_permutative_words_train(self):
         print("\nchangement de l’ordre des mots dans le train dataset\n")
         with open("train_set.json") as email_file:
             new_emails = json.load(email_file)
@@ -134,11 +135,11 @@ class TestMain(unittest.TestCase):
             json.dump(new_emails, outfile)
         newAccuracy = self.evaluate('vocabulary.json', 'train700_words.json', False)
         difference = abs(newAccuracy - self.trainbaseAccuracy)
-        print("difference: ", difference)
+        print("Difference: ", difference)
         print("\n")
         self.assertLessEqual(difference, 0.03)
 
-    def test_permutate_words_test(self):
+    def test_permutative_words_test(self):
         print("\nchangement de l’ordre des mots dans le test dataset\n")
         with open("test_set.json") as email_file:
             new_emails = json.load(email_file)
@@ -157,12 +158,12 @@ class TestMain(unittest.TestCase):
             json.dump(new_emails, outfile)
         newAccuracy = self.evaluate('vocabulary.json', 'test300_words.json', True)
         difference = abs(newAccuracy - self.testbaseAccuracy)
-        print("difference: ", difference)
+        print("Difference: ", difference)
         print("\n")
         self.assertLessEqual(difference, 0.03)
 
 
-    def test_double_email_test(self):
+    def test_multiplicative_email_test(self):
          print("\najout des memes e-mails dans le test dataset\n")
          with open("test_set.json") as email_file:
              new_emails = json.load(email_file)
@@ -172,13 +173,13 @@ class TestMain(unittest.TestCase):
             
          with open("test300x2.json", "w") as outfile:
              json.dump(new_emails, outfile)
-         newAccuracy = self.evaluate('vocabulary.json', 'test300x2.json', False)
+         newAccuracy = self.evaluate('vocabulary.json', 'test300x2.json', True)
          difference = abs(newAccuracy - self.testbaseAccuracy)
-         print("difference: ", difference)
+         print("Difference: ", difference)
          print("\n")
          self.assertLessEqual(difference, 0.03)
 
-    def test_double_email_train(self):
+    def test_multiplicative_email_train(self):
         print("\najout des memes e-mails dans le train dataset\n")
         with open("train_set.json") as email_file:
             new_emails = json.load(email_file)
@@ -188,9 +189,9 @@ class TestMain(unittest.TestCase):
             
         with open("train700x2.json", "w") as outfile:
             json.dump(new_emails, outfile)
-        newAccuracy = self.evaluate('vocabulary.json', 'train700x2.json', True)
+        newAccuracy = self.evaluate('vocabulary.json', 'train700x2.json', False)
         difference = abs(newAccuracy - self.trainbaseAccuracy)
-        print("difference: ", difference)
+        print("Difference: ", difference)
         print("\n")
         self.assertLessEqual(difference, 0.03)
     
@@ -200,10 +201,10 @@ class TestMain(unittest.TestCase):
             allWords = allWords.replace('[\'','')
             allWords = allWords.replace('\']','')
             allWords = allWords.replace('\n','')
-            allWords = allWords.split("', '")
+            allWords = allWords = re.split('\', |\'|", |"', allWords)
         return allWords
 
-    def test_noise_train(self):
+    def test_noise_based_train(self):
         print("\najout du ”bruit” dans le ”train dataset”\n")
         with open("train_set.json") as email_file:
             new_emails = json.load(email_file)
@@ -219,14 +220,14 @@ class TestMain(unittest.TestCase):
             e_mail["Body"] = body
         with open("train700_noise.json", "w") as outfile:
             json.dump(new_emails, outfile)
-        newAccuracy = self.evaluate('vocabulary.json', 'train700_noise.json', True)
+        newAccuracy = self.evaluate('vocabulary.json', 'train700_noise.json', False)
         difference = abs(newAccuracy - self.trainbaseAccuracy)
-        print("difference: ", difference)
+        print("Difference: ", difference)
         print("\n")
         self.assertLessEqual(difference, 0.03)
         
         
-    def test_noise_test(self):
+    def test_noise_based_test(self):
         print("\najout du ”bruit” dans le ”test dataset”\n")
         with open("test_set.json") as email_file:
             new_emails = json.load(email_file)
@@ -242,7 +243,7 @@ class TestMain(unittest.TestCase):
             e_mail["Body"] = body
         with open("test300_noise.json", "w") as outfile:
             json.dump(new_emails, outfile)
-        newAccuracy = self.evaluate('vocabulary.json', 'test300_noise.json', False)
+        newAccuracy = self.evaluate('vocabulary.json', 'test300_noise.json', True)
         difference = abs(newAccuracy - self.testbaseAccuracy)
         print("difference: ", difference)
         print("\n")
